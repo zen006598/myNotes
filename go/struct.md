@@ -1,5 +1,11 @@
 # struct
 
+- 值型別：當你將一個 struct 指派給另一個變數時，會複製整個值
+- `struct` 本身只定義資料欄位
+- `function` 是與 `struct` 分離定義，強調語言的組合與介面實現
+- 不支援傳統的繼承，採用**組合（composition）和嵌入（embedding）**來重用程式碼
+- 沒有建構子，使用工廠函式始化與回傳 `struct`
+
 ## 基礎結構
 
 命名規則 編譯會錯
@@ -75,7 +81,7 @@ func (p Person) GetAge() {
 }
 
 // 使用 pointer 來修改內容
-// 可以想成
+// 可以想像成
 // void SetAge(int a) {
 //     this.Height = a;
 // }
@@ -94,52 +100,43 @@ func main() {
 // output 35
 ```
 
-```go
-type Player struct {
-	Damage  int
-	Defense int
-}
-```
+## 匿名欄位/嵌入式欄位 （繼承）
 
 ```go
-package main
-
-import "fmt"
-
 func main() {
-	p1 := NewPlayer()
-	p1.Attack()
-
-	warrior := Warrior{Player{15, 10}}
-	magician := Magician{NewPlayer()}
-	warrior.Attack()
-	magician.Attack()
-}
-
-
-// 建構子
-//refer https://stackoverflow.com/questions/18125625/constructors-in-go
-func NewPlayer() Player {
-	return Player{
-		Damage:  10,
-		Defense: 5,
+	// 初始化 Employee 物件，可以直接設定 Person 的欄位
+	m := Men{
+		Person: Person{Hight: 190, Weight: 80},
+		Beard:  true,
 	}
-}
-// class method
-func (p *Player) Attack() {
-	fmt.Printf("Player deals %d damage\n", p.Damage)
-}
-// inherit
-type Warrior struct {
-	Player
-}
-// override inherit method
-func (p *Warrior) Attack() {
-	fmt.Printf("Warrior deals %d damage\n", p.Damage)
+	fmt.Printf("Hight: %d\n", m.Hight)
+	fmt.Printf("Weight: %d\n", m.Weight)
+	fmt.Printf("have beard: %t\n", m.Beard)
+
+	// Men 直接擁有 Person 的方法
+	m.Greet()
 }
 
-type Magician struct {
-	Player
+// Hight: 190
+// Weight: 80
+// have beard: true
+// Hello
+
+type Person struct {
+	Hight  int
+	Weight int
 }
 
+type Men struct {
+	Person
+	Beard bool
+}
+
+func (p *Person) SetHight(h int) {
+	p.Hight = h
+}
+
+func (p Person) Greet() {
+	fmt.Println("Hello")
+}
 ```
