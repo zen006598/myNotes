@@ -140,3 +140,53 @@ func (p Person) Greet() {
 	fmt.Println("Hello")
 }
 ```
+
+```go
+func main() {
+	boxes := Boxes{
+		Box{4, 4, 4, RED},
+		Box{10, 10, 1, YELLOW},
+		Box{1, 1, 20, BLACK},
+		Box{10, 10, 1, BLUE},
+		Box{10, 30, 1, WHITE},
+		Box{20, 20, 20, YELLOW},
+	}
+
+	boxes[0].SetColor(WHITE)
+	(&boxes[0]).SetColor(RED)
+
+	fmt.Print(boxes[0].Color.toString())
+}
+
+type Box struct {
+	Width  int
+	Height int
+	Depth  int
+	Color  Color
+}
+
+type Boxes []Box
+
+func (b Box) Volume() int {
+	return b.Width * b.Height * b.Depth
+}
+
+func (b *Box) SetColor(c Color) {
+	b.Color = c
+}
+
+type Color byte
+
+const (
+	WHITE = iota
+	BLACK
+	BLUE
+	RED
+	YELLOW
+)
+
+func (c Color) toString() string {
+	strings := []string{"WHITE", "BLACK", "BLUE", "RED", "YELLOW"}
+	return strings[c]
+}
+```
